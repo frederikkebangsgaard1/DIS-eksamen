@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Vejr App</title>
+  <link rel="icon" type="image/png" href="/vejr/images/favicon.png">
+  <link rel="stylesheet" href="/vejr/stylesheets/style.css">
+</head>
+
+<body>
+
+  <a href="/vejr">
+    <h1>Vejrdata</h1>
+  </a>
+  <img src="/vejr/images/logo.png" alt="Vejr icon" width="120px">
+
+  <br />
+  <br />
+  <br />
+
+  <input type="text" id="city" placeholder="Indtast bynavn" value="Copenhagen">
+  <button id="getWeather">Hent vejr</button>
+  <div id="weatherResult"></div>
+
+  <br />
+
+  <input type="text" id="cities" placeholder="Byer kommasepareret" value="Copenhagen,Aarhus,Odense">
+  <button id="getWeathers">Hent vejr for flere byer</button>
+  <div id="weathersResult"></div>
+
+  <script src="/vejr/javascripts/weather.js"></script>
+
+</body>
+
+</html>
