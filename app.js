@@ -18,4 +18,9 @@ app.use('/vejr', express.static(path.join(__dirname, 'public')));
 app.use('/vejr', indexRouter);
 app.use('/vejr/api', apiRouter);
 
+// Redirect root '/' to '/vejr' so visiting the server root serves the app
+app.get('/', function (req, res) {
+	res.redirect('/vejr');
+});
+
 module.exports = app;
