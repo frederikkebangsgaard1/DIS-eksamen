@@ -1,0 +1,43 @@
+body{
+    background-color: #f9f7ef;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 20px;
+}
+
+h1{
+    position: absolute;
+    top: 30px;
+    left: 30px;
+
+    background-color: darkgreen;
+    color: yellow;
+    opacity: 0.5;
+    
+    padding: 15px 20px;
+    border-radius: 10px;
+
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
+    line-height: 10px;
+}
+
+.box1 {
+    border: 2px solid #e8ea76;
+    padding: 20px;
+    border-radius: 10px;
+
+    margin-top: 120px;
+    margin-bottom: 20px;
+}
+
+.box2 {
+    border: 2px solid #e8ea76;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+
+
