@@ -1,29 +1,40 @@
-const btn = document.getElementById('btn');
-const cityInput = document.getElementById('city');
-const result = document.getElementById('result');
+// Hent query-parameter 'city' og eventName fra URL'en
+const urlParams = new URLSearchParams(window.location.search);
+const city = urlParams.get('city');
+const eventName = urlParams.get('eventName');
 
-btn.addEventListener('click', async () => {
-  const q = cityInput.value.trim();
-  if (!q) {
-    result.textContent = 'Skriv en by.';
-    return;
-  }
-  result.textContent = 'Henter...';
-  try {
-    const res = await fetch(`/api/weather?q=${encodeURIComponent(q)}`);
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      result.textContent = 'Fejl: ' + (err.error || res.statusText);
-      return;
-    }
-    const d = await res.json();
-    result.innerHTML = `
-      <h2>${d.city}${d.country ? ', ' + d.country : ''}</h2>
-      <p><strong>${d.temp}°C</strong> — ${d.description || ''}</p>
-      <p>Føles som ${d.feels_like}°C</p>
-      ${d.icon ? `<img src="${d.icon}" alt="${d.description || ''}"/>` : ''}
-    `;
-  } catch (e) {
-    result.textContent = 'Netværksfejl: ' + e.message;
-  }
-});
+// Sæt først event navn og by
+const eventNameElement = document.getElementById('eventName');
+if (eventName) {
+  eventNameElement.textContent = eventName;
+} else {
+  eventNameElement.textContent = "Ukendt Event";
+}
+const vejrinfoElement = document.getElementById('vejrinfo');
+if (city) {
+  vejrinfoElement.textContent = `Henter vejrudsigten for ${city}...`;
+} else {
+  vejrinfoElement.textContent = "Ingen by angivet for vejrudsigten.";
+}
+
+
+if (city && eventName) {
+  // Hent vejrudsigten fra serverens API
+  fetch(`/api/weather?city=${encodeURIComponent(city)}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        vejrinfoElement.innerHTML = `<p>Fejl ved hentning af vejrudsigten: ${data.error}</p>`;
+      } else {
+        vejrinfoElement.innerHTML = `
+          <p><strong>Temperatur:</strong> ${data.temp}°C</p>
+          <p><strong>Føles som:</strong> ${data.feels_like}°C</p>
+          <p><strong>Vejr:</strong> ${data.description}</p>
+          ${data.icon ? `<img src="${data.icon}" alt="${data.description}"/>` : ''}
+        `;
+      }
+    })
+    .catch(error => {
+      messageSection.innerHTML += `<p>Netværksfejl ved hentning af vejrudsigten: ${error.message}</p>`;
+    });
+}

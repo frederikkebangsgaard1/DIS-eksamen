@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 require('dotenv').config();
 const path = require('path');
+const { notify } = require('./controllers/NotifyController');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,21 +11,21 @@ const API_KEY = process.env.OPENWEATHER_API_KEY;
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/weather', async (req, res) => {
-  const q = req.query.q;
-  if (!q) return res.status(400).json({ error: 'Manglende query-parameter q (by-navn)' });
-  if (!API_KEY) return res.status(500).json({ error: 'Server mangler OPENWEATHER_API_KEY. Sæt den i .env eller som env variabel.' });
+  const city = req.query.city;
+  if (!city) return res.status(400).json({ error: 'Manglende query-parameter city (by-navn)' });
   try {
+    const unixtime = Math.floor(Date.now() / 1000) + 86400; // nu + 24 timer
     const resp = await axios.get('https://api.openweathermap.org/data/2.5/weather', {
-      params: { q, units: 'metric', appid: API_KEY }
+      params: { q: city, units: 'metric', appid: API_KEY, dt: unixtime }
     });
-    const d = resp.data;
+    const data = resp.data;
     const result = {
-      city: d.name,
-      country: d.sys && d.sys.country,
-      temp: d.main && d.main.temp,
-      feels_like: d.main && d.main.feels_like,
-      description: d.weather && d.weather[0] && d.weather[0].description,
-      icon: d.weather && d.weather[0] ? `https://openweathermap.org/img/wn/${d.weather[0].icon}@2x.png` : null
+      city: data.name,
+      country: data.sys && data.sys.country,
+      temp: data.main && data.main.temp,
+      feels_like: data.main && data.main.feels_like,
+      description: data.weather && data.weather[0] && data.weather[0].description,
+      icon: data.weather && data.weather[0] ? `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png` : null
     };
     res.json(result);
   } catch (err) {
@@ -33,6 +34,9 @@ app.get('/api/weather', async (req, res) => {
     res.status(status).json({ error: message });
   }
 });
+
+// Webhook endpoint for notifications fra understory
+app.post('/api/notify', notify);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
