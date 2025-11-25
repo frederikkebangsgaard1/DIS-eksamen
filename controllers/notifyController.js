@@ -24,7 +24,7 @@ async function notify (req, res) {
   const message = `
   Hej, Tak for din tilmelding! \n
 På linken nedenfor kan du se vejrudsigten for i morgen hvor eventet finder sted. \n
-http://localhost:${PORT}?city=${encodeURIComponent(city)}&eventName=${encodeURIComponent(eventName)} \n
+https://dis.engineer?city=${encodeURIComponent(city)}&eventName=${encodeURIComponent(eventName)} \n
 Vi glæder os til at se dig!
   `;
 
