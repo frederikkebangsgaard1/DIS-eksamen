@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 require('dotenv').config();
 const path = require('path');
-const { notify } = require('./controllers/NotifyController');
+const { notify } = require('./controllers/notifyController');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
