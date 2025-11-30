@@ -54,7 +54,7 @@ async function sendEmail(to, subject, text) {
 async function sendSMS(to, body) {
   return await twilioClient.messages.create({
     body: body,
-    from: 'Understory X Weather Buddy',
+    from: 'Understory X Sky Buddy',
     to: "+" +to
   });
 }
