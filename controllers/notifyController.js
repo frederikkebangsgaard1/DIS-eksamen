@@ -47,12 +47,14 @@ Vi glæder os til at se dig!
 async function sendEmail(to, subject, text) {
 
 
+
+
 }
 
 async function sendSMS(to, body) {
   return await twilioClient.messages.create({
     body: body,
-    from: 'Vejrudsigt',
+    from: 'Understory X Weather Buddy',
     to: "+" +to
   });
 }
