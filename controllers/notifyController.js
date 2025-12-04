@@ -17,10 +17,7 @@ async function notify(req, res) {
   const city = req.query.city;
   const email = req.query.email;
   const phonenumber = req.query.phonenumber;
-  const eventName = req.query.eventName;
-
-  console.log(phonenumber, typeof phonenumber);
-  
+  const eventName = req.query.eventName;  
 
   const message = `
 Hej, Tak for din tilmelding! \n
