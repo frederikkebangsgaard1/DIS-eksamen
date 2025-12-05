@@ -62,5 +62,5 @@ app.listen(PORT, () => {
 });
 
 app.get("/weatherPal", (req, res) => {
-  res.sendFile(__dirname + "/public/weatherPal.png");
+  res.sendFile(__dirname + "/public/weatherPal.ico");
 });
