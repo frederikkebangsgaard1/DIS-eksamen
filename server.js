@@ -60,3 +60,7 @@ app.post('/api/notify', notify);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+app.get("/favicon", (req, res) => {
+  res.sendFile(__dirname + "/public/favicon.ico");
+});
