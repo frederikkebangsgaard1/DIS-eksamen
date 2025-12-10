@@ -34,7 +34,11 @@ loginForm.addEventListener('submit', async (e) => {
       body: JSON.stringify(loginData)
     });
     if(response.ok) {
-        console.log('Login successful');
+      // Login successful, redirect to weatherpal with query parameters
+      const json = await response.json();
+      window.location.href = json.redirectUrl;
+
+
     } else  {
       alert("Ugyldig event ID, email eller pinkode");
     }

@@ -30,7 +30,7 @@ async function auth(req, res) {
         res.cookie('session-email', email, { httpOnly: true, maxAge: 3600000 }); // 1 hour
         res.cookie('session-event', eventId, { httpOnly: true, maxAge: 3600000 }); // 1 hour
         // Login successful
-        return res.redirect(`/weatherpal?eventId=${eventId}&eventName=${encodeURIComponent(eventName)}&city=${encodeURIComponent(city)}`);
+        return res.status(200).json({ redirectUrl: `/weatherpal?eventId=${eventId}&eventName=${encodeURIComponent(eventName)}&city=${encodeURIComponent(city)}` });
     
       } catch (err) {
         console.error('Login fejl:', err.message);

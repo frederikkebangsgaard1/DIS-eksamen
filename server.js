@@ -40,6 +40,10 @@ app.use(express.urlencoded({ extended: true }));
 // Helmet middleware for security headers
 app.use(helmet());
 
+app.get("/", (req, res) => {
+  res.redirect("/weatherpal");
+});
+
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
