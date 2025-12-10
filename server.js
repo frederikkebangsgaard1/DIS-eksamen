@@ -38,7 +38,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Helmet middleware for security headers
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: [
+          "'self'",
+          "data:",
+        ],
+      },
+    },
+  }));
+
 
 app.get("/", (req, res) => {
   res.redirect("/weatherpal");
