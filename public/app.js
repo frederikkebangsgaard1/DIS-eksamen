@@ -39,3 +39,23 @@ if (city && eventName) {
       messageSection.innerHTML += `<p>Netværksfejl ved hentning af vejrudsigten: ${error.message}</p>`;
     });
 }
+
+
+
+// Logud knap funktionalitet
+const logoutButton = document.getElementById('logout');
+logoutButton.addEventListener('click', () => {
+  // De kan kun slettes ved http respons fra serveren, så vi laver et fetch kald
+  fetch('/logout', { method: 'POST' })
+    .then(response => {
+      if (response.ok) {
+        window.location.href = '/login';
+      } else {
+        alert('Fejl ved logud. Prøv igen.');
+      }
+    })
+    .catch(error => {
+      alert('Netværksfejl ved logud: ' + error.message);
+    });
+
+});

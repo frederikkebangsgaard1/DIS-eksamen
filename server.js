@@ -5,11 +5,20 @@ const path = require('path');
 const { notify } = require('./controllers/notifyController');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+const authController = require('./controllers/authController');
 const db = require('./database/db'); // Import database connection
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.OPENWEATHER_API_KEY;
+
+db.testConnection(); // tjek DB ved opstart
+
+
+
+
 
 // Rate limiting middleware
 const limiter = rateLimit({
@@ -21,7 +30,12 @@ const limiter = rateLimit({
 	// store: ... , // Redis, Memcached, etc. See below.
 })
 
+app.use(cookieParser());
+
 app.use(limiter);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Helmet middleware for security headers
 app.use(helmet());
@@ -29,8 +43,19 @@ app.use(helmet());
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/weatherpal', authController.checkAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.post('/login', authController.auth);
+app.post('/logout', authController.logout);
+
 // Weather endpoint
-app.get('/api/weather', async (req, res) => {
+app.get('/api/weather', authController.checkAuth, async (req, res) => {
   const city = req.query.city;
   if (!city) return res.status(400).json({ error: 'Manglende query-parameter city (by-navn)' });
   try {

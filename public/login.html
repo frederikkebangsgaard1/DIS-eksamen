@@ -15,6 +15,15 @@
             
             <form id="loginForm">
                 <div class="form-group">
+                    <label for="eventid">Event ID:</label>
+                    <input 
+                        type="text" 
+                        id="eventid" 
+                        name="eventid" 
+                        required
+                    >
+                </div>
+                <div class="form-group">
                     <label for="email">Email:</label>
                     <input 
                         type="email" 
@@ -26,12 +35,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Adgangskode:</label>
+                    <label for="password">Pinkode:</label>
                     <input 
                         type="password" 
                         id="password" 
                         name="password" 
-                        placeholder="••••••••"
+                        placeholder="••••"
                         required
                     >
                 </div>
@@ -42,14 +51,10 @@
                 <div id="successMessage" class="success-message"></div>
             </form>
 
-            <!-- Bare en ide -->
-            <div class="login-footer">
-                <p>Har du ikke en konto? <a href="#signup">Opret en her</a></p>
-                <p><a href="#forgot-password">Glemt adgangskode?</a></p>
-            </div>
+
         </div>
     </div>
 
-    <script src="login.js"></script>
+    <script src="/login.js"> </script>
 </body>
 </html>

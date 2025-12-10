@@ -1,6 +1,8 @@
 const twilio = require("twilio");
 const sendgridMail = require('@sendgrid/mail');
 require('dotenv').config();
+const db = require('../database/db');
+const bcrypt = require('bcrypt');
 
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
@@ -17,12 +19,35 @@ async function notify(req, res) {
   const city = req.query.city;
   const email = req.query.email;
   const phonenumber = req.query.phonenumber;
-  const eventName = req.query.eventName;  
+  const eventName = req.query.eventName;
+  const eventId = req.query.eventId;
+
+  if (!city) return res.status(400).json({ error: 'Manglende query-parameter city (by-navn)' });
+  if (!email && !phonenumber) return res.status(400).json({ error: 'Manglende query-parameter email eller phonenumber' });
+  if (!eventName) return res.status(400).json({ error: 'Manglende query-parameter eventName' });
+  if (!eventId) return res.status(400).json({ error: 'Manglende query-parameter eventId' });  
+
+
+  // Til databasen. Lav en pinkode på 4 cifre
+  const pincode = Math.floor(1000 + Math.random() * 9000);
+  bcryptedPincode = await bcrypt.hash(pincode.toString(), 10);
+  
+  // Gem i database
+  const insertQuery = 'INSERT INTO pincodes (event_id, email, pincode, event_name, city) VALUES (?, ?, ?, ?, ?)';
+  const values = [eventId, email, bcryptedPincode, eventName, city];
+  try {
+    db.pool.execute(insertQuery, values);
+  } catch (err) {
+    return res.status(500).json({ error: 'Database fejl: ' + err.message });
+  }
+
+
 
   const message = `
 Hej, Tak for din tilmelding! \n
 På linken nedenfor kan du se vejrudsigten for i morgen hvor eventet finder sted. \n
 https://dis.engineer?city=${encodeURIComponent(city)}&eventName=${encodeURIComponent(eventName)} \n
+Din pinkode for eventet er: ${pincode} \n
 Vi glæder os til at se dig!
   `;
 
