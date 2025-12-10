@@ -5,6 +5,7 @@ const path = require('path');
 const { notify } = require('./controllers/notifyController');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const db = require('./database/db'); // Import database connection
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -48,6 +49,7 @@ app.get('/api/weather', async (req, res) => {
     };
     res.json(result);
   } catch (err) {
+    console.error('Weather API error:', err.message);
     const status = err.response && err.response.status ? err.response.status : 500;
     const message = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
     res.status(status).json({ error: message });
@@ -56,6 +58,17 @@ app.get('/api/weather', async (req, res) => {
 
 // Webhook endpoint for notifications fra understory
 app.post('/api/notify', notify);
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: 'Endpoint ikke fundet' });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ error: 'Intern serverfejl' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -10,6 +10,7 @@ if (eventName) {
 } else {
   eventNameElement.textContent = "Ukendt Event";
 }
+
 const vejrinfoElement = document.getElementById('vejrinfo');
 if (city) {
   vejrinfoElement.textContent = `Henter vejrudsigten for ${city}...`;

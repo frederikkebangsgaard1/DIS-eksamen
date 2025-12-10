@@ -26,6 +26,17 @@ https://dis.engineer?city=${encodeURIComponent(city)}&eventName=${encodeURICompo
 Vi glæder os til at se dig!
   `;
 
+  /*
+  Hej {userName}, \n
+  Tak for din tilmelding til {eventName}! \n
+  På linken nedenfor kan du se vejrudsigten for i morgen hvor eventet finder sted. \n
+  https://dis.engineer?city={city}&eventName={eventName} \n
+  Vi glæder os til at se dig! \n
+  De bedste hilsner, \n
+  WeatherPal Teamet
+  */
+
+
 
   if (!message) return res.status(400).json({ error: 'Manglende query-parameter message' });
   try {
