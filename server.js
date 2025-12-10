@@ -41,12 +41,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet({
     contentSecurityPolicy: {
       directives: {
-        defaultSrc: ["'self'"],
-        imgSrc: [
-          "'self'",
-          "data:",
-        ],
-      },
+      // Tillad billeder fra egen origin, data-urls og OpenWeatherMap
+      imgSrc: ["'self'", "data:", "https://openweathermap.org"],
+    },
     },
   }));
 
