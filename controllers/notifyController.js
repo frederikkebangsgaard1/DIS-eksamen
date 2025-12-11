@@ -46,7 +46,7 @@ async function notify(req, res) {
   const message = `
 Hej, Tak for din tilmelding! \n
 På linken nedenfor kan du se vejrudsigten for i morgen hvor eventet finder sted. \n
-https://dis.engineer?city=${encodeURIComponent(city)}&eventName=${encodeURIComponent(eventName)} \n
+https://dis.engineer/weatherpal?city=${encodeURIComponent(city)}&eventName=${encodeURIComponent(eventName)} \n
 Din pinkode for eventet er: ${pincode} \n
 Vi glæder os til at se dig!
   `;
@@ -55,7 +55,7 @@ Vi glæder os til at se dig!
   Hej {userName}, \n
   Tak for din tilmelding til {eventName}! \n
   På linken nedenfor kan du se vejrudsigten for i morgen hvor eventet finder sted. \n
-  https://dis.engineer?city={city}&eventName={eventName} \n
+  https://dis.engineer/weatherpal?city={city}&eventName={eventName} \n
   Vi glæder os til at se dig! \n
   De bedste hilsner, \n
   WeatherPal Teamet
