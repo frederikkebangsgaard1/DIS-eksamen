@@ -4,7 +4,7 @@ Denne readme beskriver, hvordan du kan køre WeatherPal lokalt på din maskine.
 ### Forudsætninger
 Før du kan køre WeatherPal lokalt, skal du have følgende installeret på din maskine:
 - Nodejs
-- PostgreSQL
+- Mysql
 - SendGrid konto (til afsendelse af emails)
 - Twilio konto (til afsendelse af SMS)
 - OpenWeather API nøgle
@@ -12,5 +12,5 @@ Før du kan køre WeatherPal lokalt, skal du have følgende installeret på din 
 ### Trin til opsætning
 - Udfyld .env med dine egne API nøgler og databaseoplysninger.
 - npm install
-- Kør SQL scriptet i database mappen for at oprette tabellen events i din PostgreSQL database.
+- Kør SQL scriptet i database mappen for at oprette tabellen events i din Mysql database.
 - npm start
