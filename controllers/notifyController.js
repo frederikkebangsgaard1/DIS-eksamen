@@ -44,30 +44,24 @@ async function notify(req, res) {
 
 
   const message = `
-Hej, Tak for din tilmelding! \n
-På linken nedenfor kan du se vejrudsigten for i morgen hvor eventet finder sted. \n
+Hejsa 😊 \n
+Vi håber, du glæder dig til dit event!\n
+Vi har lavet en lille side, hvor du kan se den nyeste vejrudsigt for dagen, så du ved hvad du kan forvente. \n
+Du finder den her: 
 https://dis.engineer/weatherpal?city=${encodeURIComponent(city)}&eventName=${encodeURIComponent(eventName)} \n
-Din pinkode for eventet er: ${pincode} \n
-Vi glæder os til at se dig!
+For at logge ind skal du benytte din personlige pinkode.
+Den får du her: ${pincode} 🤫\n
+God fornøjelse!🤘 \n
+De bedste hilsner, 
+WeatherPal Teamet
   `;
-
-  /*
-  Hej {userName}, \n
-  Tak for din tilmelding til {eventName}! \n
-  På linken nedenfor kan du se vejrudsigten for i morgen hvor eventet finder sted. \n
-  https://dis.engineer/weatherpal?city={city}&eventName={eventName} \n
-  Vi glæder os til at se dig! \n
-  De bedste hilsner, \n
-  WeatherPal Teamet
-  */
-
 
 
   if (!message) return res.status(400).json({ error: 'Manglende query-parameter message' });
   try {
     console.log(`Notification: ${message}`);
 
-    const emailRes = await sendEmail(email, `Vejrudsigt for dit event i ${city}`, message);
+    const emailRes = await sendEmail(email, `Vejrudsigt for dit event`, message);
     const smsRes = await sendSMS(phonenumber, message);
 
       await Promise.all([emailRes, smsRes]);
