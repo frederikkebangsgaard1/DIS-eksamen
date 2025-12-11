@@ -6,7 +6,6 @@ const { notify } = require('./controllers/notifyController');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const bcrypt = require('bcrypt');
 const authController = require('./controllers/authController');
 const db = require('./database/db'); // Import database connection
 
