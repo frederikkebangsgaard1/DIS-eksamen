@@ -10,18 +10,22 @@ h1{
     left: 30px;
 
     background-color: darkgreen;
-    color: yellow;
-    opacity: 0.5;
-    
-    padding: 15px 20px;
+    color: #f9f7ef;
+
+    padding: 20px 25px;
     border-radius: 10px;
 
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 700;
     font-family: 'Bebas Neue', sans-serif;
     letter-spacing: 1px;
     line-height: 10px;
 }
+
+.gul {
+    color: yellow;
+}
+
 h2#logout{
     position: absolute;
     top: 30px;
@@ -29,7 +33,7 @@ h2#logout{
 
     background-color: darkgreen;
     color: yellow;
-    opacity: 0.5;
+    opacity: 0.65;
     
     padding: 15px 20px;
     border-radius: 10px;

@@ -30,8 +30,12 @@ body {
     letter-spacing: 1px;
     color: darkgreen;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     font-size: 28px;
+}
+
+.gul {
+    color: rgb(228, 228, 38);
 }
 
 .subtitle {
@@ -68,8 +72,8 @@ body {
 .btn-login {
     width: 100%;
     padding: 12px;
-    background: darkgreen;
-    color: white;
+    background-color: darkgreen;
+    color: yellow;
     border: none;
     border-radius: 5px;
     font-size: 16px;

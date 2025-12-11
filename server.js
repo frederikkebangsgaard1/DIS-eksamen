@@ -66,24 +66,45 @@ app.get('/login', (req, res) => {
 app.post('/login', authController.auth);
 app.post('/logout', authController.logout);
 
-// Weather endpoint
+// Weather endpoint (2-timers forecast)
 app.get('/api/weather', authController.checkAuth, async (req, res) => {
   const city = req.query.city;
   if (!city) return res.status(400).json({ error: 'Manglende query-parameter city (by-navn)' });
+
+  if (!API_KEY) return res.status(500).json({ error: 'Mangler OPENWEATHER_API_KEY i miljøvariablerne' });
+
   try {
-    const unixtime = Math.floor(Date.now() / 1000) + 86400; // nu + 24 timer
-    const resp = await axios.get('https://api.openweathermap.org/data/2.5/weather', {
-      params: { q: city, units: 'metric', appid: API_KEY, dt: unixtime }
+    // Beregn målttidspunkt: nu + 2 timer (i millisekunder)
+    const targetTsMs = Date.now() + 2 * 60 * 60 * 1000;
+
+    // 5-døgn / 3-timers forecast: find det tidspunkt der ligger tættest på +2 timer
+    const resp = await axios.get('https://api.openweathermap.org/data/2.5/forecast', {
+      params: { q: city, units: 'metric', appid: API_KEY }
     });
-    const data = resp.data;
+
+    // Udtruk forecast-listen eller sæt tom array hvis den ikke findes
+    const list = resp.data && Array.isArray(resp.data.list) ? resp.data.list : [];
+    if (!list.length) return res.status(500).json({ error: 'Ingen forecast-data modtaget fra OpenWeather' });
+
+    // Find det forecast-indgang der ligger tættest på +2 timer fra nu
+    const best = list.reduce((closest, entry) => {
+      const entryMs = (entry.dt || 0) * 1000;
+      const diff = Math.abs(entryMs - targetTsMs);
+      if (!closest || diff < closest.diff) return { entry, diff };
+      return closest;
+    }, null);
+
+    const chosen = best.entry;
     const result = {
-      city: data.name,
-      country: data.sys && data.sys.country,
-      temp: data.main && data.main.temp,
-      feels_like: data.main && data.main.feels_like,
-      description: data.weather && data.weather[0] && data.weather[0].description,
-      icon: data.weather && data.weather[0] ? `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png` : null
+      city: resp.data.city && resp.data.city.name,
+      country: resp.data.city && resp.data.city.country,
+      forecast_time: chosen.dt ? new Date(chosen.dt * 1000).toISOString() : null,
+      temp: chosen.main && chosen.main.temp,
+      feels_like: chosen.main && chosen.main.feels_like,
+      description: chosen.weather && chosen.weather[0] && chosen.weather[0].description,
+      icon: chosen.weather && chosen.weather[0] ? `https://openweathermap.org/img/wn/${chosen.weather[0].icon}@2x.png` : null
     };
+
     res.json(result);
   } catch (err) {
     console.error('Weather API error:', err.message);
