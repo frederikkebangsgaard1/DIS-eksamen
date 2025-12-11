@@ -20,7 +20,7 @@ db.testConnection(); // tjek DB ved opstart
 // Rate limiting - beskytter mod misbrug ved at begrænse anmodninger
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutter
-	limit: 100, // Max 100 anmodninger per IP per 15 minutter
+	limit: 500, // Max 500 anmodninger per IP per 15 minutter
 	standardHeaders: 'draft-8', // Brug moderne rate limit headers
 	legacyHeaders: false, // Deaktiver gamle headers
 	ipv6Subnet: 56, // IPv6 subnet størrelse
