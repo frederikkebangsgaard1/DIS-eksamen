@@ -17,25 +17,22 @@ const API_KEY = process.env.OPENWEATHER_API_KEY;
 db.testConnection(); // tjek DB ved opstart
 
 
-
-
-
-// Rate limiting middleware
+// Rate limiting - beskytter mod misbrug ved at begrænse anmodninger
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
-	standardHeaders: 'draft-8', // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
-	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
-	ipv6Subnet: 56, // Set to 60 or 64 to be less aggressive, or 52 or 48 to be more aggressive
-	// store: ... , // Redis, Memcached, etc. See below.
+	windowMs: 15 * 60 * 1000, // 15 minutter
+	limit: 100, // Max 100 anmodninger per IP per 15 minutter
+	standardHeaders: 'draft-8', // Brug moderne rate limit headers
+	legacyHeaders: false, // Deaktiver gamle headers
+	ipv6Subnet: 56, // IPv6 subnet størrelse
+	// store: ... , // Kan bruge Redis, Memcached, osv.
 })
 
-app.use(cookieParser());
 
-app.use(limiter);
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Parser middleware
+app.use(cookieParser()); // Læs cookies fra anmodninger
+app.use(limiter); // Anvend rate limiting på alle anmodninger
+app.use(express.json()); // Parser JSON request bodies
+app.use(express.urlencoded({ extended: true })); // Parser URL-encoded bodies
 
 // Helmet middleware for security headers
 app.use(helmet({
@@ -45,26 +42,29 @@ app.use(helmet({
       imgSrc: ["'self'", "data:", "https://openweathermap.org"],
     },
     },
-  }));
+}));
 
-
+// Omdiriger root til /weatherpal
 app.get("/", (req, res) => {
   res.redirect("/weatherpal");
 });
 
-// Serve static files from the 'public' directory
+// Serve statiske filer fra public mappen
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Hjemmesiden - kræver login
 app.get('/weatherpal', authController.checkAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Login-side
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-app.post('/login', authController.auth);
-app.post('/logout', authController.logout);
+// Login og logout håndtering
+app.post('/login', authController.auth); // Autentificer bruger
+app.post('/logout', authController.logout); // Log bruger ud
 
 // Weather endpoint (2-timers forecast)
 app.get('/api/weather', authController.checkAuth, async (req, res) => {
@@ -114,7 +114,8 @@ app.get('/api/weather', authController.checkAuth, async (req, res) => {
   }
 });
 
-// Webhook endpoint for notifications fra understory
+// Webhook fra Understory - modtager notifications når events ændres
+// Skal dette slettes?
 app.post('/api/notify', notify);
 
 // 404 handler
@@ -122,16 +123,15 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Endpoint ikke fundet' });
 });
 
-// Global error handler
+// Generel fejlhåndtering for hele serveren
 app.use((err, req, res, next) => {
   console.error('Server error:', err);
   res.status(500).json({ error: 'Intern serverfejl' });
 });
 
+// Start serveren
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server kører på port ${PORT}`);
 });
 
-app.get("/weatherPal", (req, res) => {
-  res.sendFile(__dirname + "/public/weatherPal.ico");
-});
+
