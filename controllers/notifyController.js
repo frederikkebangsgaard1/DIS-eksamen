@@ -48,7 +48,7 @@ Hejsa 😊 \n
 Vi håber, du glæder dig til dit event!\n
 Vi har lavet en lille side, hvor du kan se den nyeste vejrudsigt for dagen, så du ved hvad du kan forvente. \n
 Du finder den her: 
-https://dis.engineer/weatherpal?city=${encodeURIComponent(city)}&eventName=${encodeURIComponent(eventName)} \n
+https://dis.engineer/login?city=${encodeURIComponent(city)}&eventid=${encodeURIComponent(eventId)} \n
 For at logge ind skal du benytte din personlige pinkode.
 Den får du her: ${pincode} 🤫\n
 God fornøjelse!🤘 \n
