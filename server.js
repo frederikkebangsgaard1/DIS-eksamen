@@ -16,7 +16,7 @@ const API_KEY = process.env.OPENWEATHER_API_KEY;
 db.testConnection(); // tjek DB ved opstart
 
 
-// Rate limiting - beskytter mod misbrug ved at begrænse anmodninger
+// Rate limiting - beskytter mod misbrug ved at begrænse anmodninger pr. IP
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutter
 	limit: 500, // Max 500 anmodninger per IP per 15 minutter
@@ -65,7 +65,7 @@ app.get('/login', (req, res) => {
 app.post('/login', authController.auth); // Autentificer bruger
 app.post('/logout', authController.logout); // Log bruger ud
 
-// Weather endpoint (2-timers forecast)
+// Weather endpoint (ca. 2-timers forecast)
 app.get('/api/weather', authController.checkAuth, async (req, res) => {
   const city = req.query.city;
   if (!city) return res.status(400).json({ error: 'Manglende query-parameter city (by-navn)' });
@@ -76,7 +76,7 @@ app.get('/api/weather', authController.checkAuth, async (req, res) => {
     // Beregn målttidspunkt: nu + 2 timer (i millisekunder)
     const targetTsMs = Date.now() + 2 * 60 * 60 * 1000;
 
-    // 5-døgn / 3-timers forecast: find det tidspunkt der ligger tættest på +2 timer
+    // 5-døgn (3-timers intervaller) - find det tidspunkt der ligger tættest på +2 timer
     const resp = await axios.get('https://api.openweathermap.org/data/2.5/forecast', {
       params: { q: city, units: 'metric', appid: API_KEY }
     });
@@ -93,7 +93,10 @@ app.get('/api/weather', authController.checkAuth, async (req, res) => {
       return closest;
     }, null);
 
+    // Vælg den bedste indgang
     const chosen = best.entry;
+
+    //  Saml de data vi vil returnere
     const result = {
       city: resp.data.city && resp.data.city.name,
       country: resp.data.city && resp.data.city.country,
@@ -101,11 +104,12 @@ app.get('/api/weather', authController.checkAuth, async (req, res) => {
       temp: chosen.main && chosen.main.temp,
       feels_like: chosen.main && chosen.main.feels_like,
       description: chosen.weather && chosen.weather[0] && chosen.weather[0].description,
-      icon: chosen.weather && chosen.weather[0] ? `https://openweathermap.org/img/wn/${chosen.weather[0].icon}@2x.png` : null
+      icon: chosen.weather && chosen.weather[0] ? `https://openweathermap.org/img/wn/${chosen.weather[0].icon}@2x.png` : null // Vejrikon URL hvis det findes
     };
 
     res.json(result);
   } catch (err) {
+    // Fejlhåndtering for OpenWeather API kald
     console.error('Weather API error:', err.message);
     const status = err.response && err.response.status ? err.response.status : 500;
     const message = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
@@ -114,7 +118,6 @@ app.get('/api/weather', authController.checkAuth, async (req, res) => {
 });
 
 // Webhook fra Understory - modtager notifications når events ændres
-// Skal dette slettes?
 app.post('/api/notify', notify);
 
 // 404 handler

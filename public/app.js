@@ -11,6 +11,7 @@ if (eventName) {
   eventNameElement.textContent = "Ukendt Event";
 }
 
+// Sæt derefter vejrinfo
 const vejrinfoElement = document.getElementById('vejrinfo');
 if (city) {
   vejrinfoElement.textContent = `Henter vejrudsigten for ${city}...`;
@@ -19,6 +20,7 @@ if (city) {
 }
 
 
+// Hent og vis vejrudsigten hvis by og eventName er angivet
 if (city && eventName) {
   // Hent vejrudsigten fra serverens API - 2-timers forecast
   fetch(`/api/weather?city=${encodeURIComponent(city)}`)
@@ -42,7 +44,6 @@ if (city && eventName) {
       vejrinfoElement.innerHTML = `<p>Netværksfejl ved hentning af vejrudsigten: ${error.message}</p>`;
     });
 }
-
 
 
 // Logud knap - lytter efter klik og sender logud-anmodning

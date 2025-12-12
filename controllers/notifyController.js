@@ -14,7 +14,7 @@ twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 sendgridMail.setApiKey(SENDGRID_API_KEY);
 
 
-
+// Send notifikation via email og/eller SMS
 async function notify(req, res) {
   const city = req.query.city;
   const email = req.query.email;
@@ -22,11 +22,11 @@ async function notify(req, res) {
   const eventName = req.query.eventName;
   const eventId = req.query.eventId;
 
+  // Tjek for manglende parametre
   if (!city) return res.status(400).json({ error: 'Manglende query-parameter city (by-navn)' });
   if (!email && !phonenumber) return res.status(400).json({ error: 'Manglende query-parameter email eller phonenumber' });
   if (!eventName) return res.status(400).json({ error: 'Manglende query-parameter eventName' });
   if (!eventId) return res.status(400).json({ error: 'Manglende query-parameter eventId' });  
-
 
   // Til databasen. Lav en pinkode på 4 cifre
   const pincode = Math.floor(1000 + Math.random() * 9000);
@@ -42,7 +42,7 @@ async function notify(req, res) {
   }
 
 
-
+// Beskedindhold
   const message = `
 Hejsa 😊 \n
 Vi håber, du glæder dig til dit event!\n
@@ -56,7 +56,7 @@ De bedste hilsner,
 WeatherPal Teamet
   `;
 
-
+  // Tjek for manglende besked
   if (!message) return res.status(400).json({ error: 'Manglende query-parameter message' });
   try {
     console.log(`Notification: ${message}`);
@@ -72,6 +72,7 @@ WeatherPal Teamet
   }
 }
 
+//  Send email via SendGrid
 async function sendEmail(to, subject, text) {
   if (!to) throw new Error('Missing recipient email address');
   try {
@@ -87,6 +88,7 @@ async function sendEmail(to, subject, text) {
   }
 }
 
+// Send SMS via Twilio
 async function sendSMS(to, body) {
   try {
       return await twilioClient.messages.create({

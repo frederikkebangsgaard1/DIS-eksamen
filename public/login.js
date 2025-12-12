@@ -10,6 +10,7 @@ console.log(eventId);
 // Håndter login formular submission
 const loginForm = document.getElementById('loginForm');;
 
+// Login side - håndter formular submission
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -22,9 +23,9 @@ loginForm.addEventListener('submit', async (e) => {
     eventId: eventId,
     email: email,
     pincode: pincode
-
   };
 
+  // Send login anmodning til serveren
   try {
     const response = await fetch('/login', {
       method: 'POST',
@@ -34,14 +35,15 @@ loginForm.addEventListener('submit', async (e) => {
       body: JSON.stringify(loginData)
     });
     if(response.ok) {
-      // Login successful, redirect to weatherpal with query parameters
+      // Login successful, redirect to weatherpal med query parameters
       const json = await response.json();
       window.location.href = json.redirectUrl;
-
 
     } else  {
       alert("Ugyldig event ID, email eller pinkode");
     }
+
+    // Fejlhåndtering
   } catch (error) {
     console.error('Error during login:', error);
     if (error.message) {
